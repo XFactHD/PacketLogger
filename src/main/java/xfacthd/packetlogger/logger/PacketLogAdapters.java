@@ -143,7 +143,7 @@ public final class PacketLogAdapters
         packet("ServerboundChatSessionUpdatePacket", PacketLogConverter.registerAdapter(ServerboundChatSessionUpdatePacket.class, SensitiveDataPacketLogAdapter.INSTANCE));
         packet("ServerboundClientCommandPacket", null);
         packet("ServerboundClientInformationPacket", null);
-        packet("ServerboundCommandSuggestionPacket", null);
+        packet("ServerboundCommandSuggestionPacket", PacketLogConverter.registerAdapter(ServerboundChatSessionUpdatePacket.class, SensitiveDataPacketLogAdapter.INSTANCE));
         packet("ServerboundContainerButtonClickPacket", null);
         packet("ServerboundContainerClickPacket", null);
         packet("ServerboundContainerClosePacket", null);

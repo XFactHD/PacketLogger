@@ -61,21 +61,21 @@ public class PacketLogCommand
         if (FMLEnvironment.dist.isDedicatedServer())
         {
             MinecraftForge.EVENT_BUS.addListener((RegisterCommandsEvent event) ->
-                    registerCommand(event.getDispatcher(), SERVER_PREFIX)
+                    registerCommand(event.getDispatcher(), SERVER_PREFIX, true)
             );
         }
         else
         {
             MinecraftForge.EVENT_BUS.addListener((RegisterClientCommandsEvent event) ->
-                    registerCommand(event.getDispatcher(), CLIENT_PREFIX)
+                    registerCommand(event.getDispatcher(), CLIENT_PREFIX, false)
             );
         }
     }
 
-    private static void registerCommand(CommandDispatcher<CommandSourceStack> dispatcher, String prefix)
+    private static void registerCommand(CommandDispatcher<CommandSourceStack> dispatcher, String prefix, boolean requireOp)
     {
         dispatcher.register(Commands.literal(prefix)
-                .requires(src -> src.hasPermission(Commands.LEVEL_OWNERS))
+                .requires(src -> !requireOp || src.hasPermission(Commands.LEVEL_OWNERS))
                 .then(Commands.literal(LITERAL_PRINT_FILTERS)
                         .executes(ctx -> printFilters(ctx, false))
                         .then(Commands.argument(ARG_PAGE, IntegerArgumentType.integer(1, getFilterPageCount()))
