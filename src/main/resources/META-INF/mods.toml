@@ -1,0 +1,30 @@
+modLoader="javafml"
+loaderVersion="[45,)"
+license="LGPLv3"
+issueTrackerURL="https://github.com/xfacthd/packetlogger"
+
+[[mods]]
+	modId="packetlogger"
+	version="${file.jarVersion}"
+	displayName="PacketLogger"
+	#updateJSONURL="https://change.me.example.invalid/updates.json"
+	displayURL="https://www.curseforge.com/minecraft/mc-mods/packetlogger"
+	logoFile="logo.png"
+	authors="XFactHD"
+	displayTest="IGNORE_ALL_VERSION"
+	description='''
+	'''
+
+[[dependencies.packetlogger]]
+    modId="forge"
+    mandatory=true
+    versionRange="[45,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.packetlogger]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.19.4,1.20)"
+    ordering="NONE"
+    side="BOTH"

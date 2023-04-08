@@ -1,0 +1,14 @@
+{
+  "msg.packetlogger.cmd.filters.options": "Packet filter types [%d] <page %s / %s> :",
+  "msg.packetlogger.logger.already_running": "Packet logger is already running",
+  "msg.packetlogger.logger.export.complete": "Packet log saved",
+  "msg.packetlogger.logger.invalid_filter": "Invalid filter entry: %s",
+  "msg.packetlogger.logger.not_running": "Packet logger has not been started",
+  "msg.packetlogger.logger.started": "Packet logger started (inbound: %s, outbound: %s, log packets: %s, log size: %s, hex dump: %s, time limit: %s)",
+  "msg.packetlogger.logger.stopped": "Packet logger stopped",
+  "msg.packetlogger.logger.stopped_async": "Packet logger stopped. Log output may be delayed due to amount of logged data",
+  "value.packetlogger.false": "false",
+  "value.packetlogger.time.seconds": "%s seconds",
+  "value.packetlogger.time.unlimited": "unlimited",
+  "value.packetlogger.true": "true"
+}
