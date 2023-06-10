@@ -10,7 +10,7 @@ import xfacthd.packetlogger.event.ServerEvents;
 import xfacthd.packetlogger.logger.PacketLogAdapters;
 
 @Mod(PacketLogger.MODID)
-public class PacketLogger
+public final class PacketLogger
 {
     public static final String MODID = "packetlogger";
     public static final Logger LOGGER = LogUtils.getLogger();

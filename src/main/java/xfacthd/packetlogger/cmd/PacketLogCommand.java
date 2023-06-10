@@ -38,7 +38,7 @@ import java.util.concurrent.CompletableFuture;
  * <b>Usage:</b> /pktlog filters
  * <b>Description:</b> List all possible packet type filters to use with the 'filters' argument <br>
  */
-public class PacketLogCommand
+public final class PacketLogCommand
 {
     private static final String CLIENT_PREFIX = "pktlogc";
     private static final String SERVER_PREFIX = "pktlog";
@@ -128,7 +128,7 @@ public class PacketLogCommand
             msg.append("\n - ").append(types.get(i));
         }
 
-        ctx.getSource().sendSuccess(msg, false);
+        ctx.getSource().sendSuccess(() -> msg, false);
 
         return 0;
     }
@@ -212,4 +212,8 @@ public class PacketLogCommand
 
         return builder.buildFuture();
     }
+
+
+
+    private PacketLogCommand() { }
 }

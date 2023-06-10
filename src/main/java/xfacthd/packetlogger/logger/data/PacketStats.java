@@ -18,10 +18,14 @@ public final class PacketStats implements Comparable<PacketStats>
     public void account(PacketInfo info)
     {
         count++;
-        int size = info.getSize().getSize();
-        totalSize += size;
-        minSize = Math.min(minSize, size);
-        maxSize = Math.max(maxSize, size);
+
+        if (info != null)
+        {
+            int size = info.getSize().getSize();
+            totalSize += size;
+            minSize = Math.min(minSize, size);
+            maxSize = Math.max(maxSize, size);
+        }
     }
 
     public Class<?> getPacketType()

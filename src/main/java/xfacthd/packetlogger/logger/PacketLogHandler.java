@@ -104,7 +104,7 @@ public abstract class PacketLogHandler
         running = true;
         startTime = System.currentTimeMillis();
 
-        src.sendSuccess(Component.translatable(MSG_STARTED, logCtx.toMessageArgs()), true);
+        src.sendSuccess(() -> Component.translatable(MSG_STARTED, logCtx.toMessageArgs()), true);
         return 1;
     }
 
@@ -117,7 +117,7 @@ public abstract class PacketLogHandler
         }
 
         boolean async = stop(false);
-        src.sendSuccess(async ? MSG_STOPPED_ASYNC : MSG_STOPPED, true);
+        src.sendSuccess(() -> async ? MSG_STOPPED_ASYNC : MSG_STOPPED, true);
         return 1;
     }
 
@@ -166,14 +166,12 @@ public abstract class PacketLogHandler
 
     public static void logInbound(Connection connection, Packet<?> packet)
     {
-        PacketLogger.LOGGER.warn("Inbound packet about to be captured");
         if (!running) { return; }
         instance.logInboundPacket(connection, packet);
     }
 
     public static void logOutbound(Connection connection, Packet<?> packet)
     {
-        PacketLogger.LOGGER.warn("Outbound packet about to be captured");
         if (!running) { return; }
         instance.logOutboundPacket(connection, packet);
     }
@@ -195,11 +193,6 @@ public abstract class PacketLogHandler
         {
             pipeline.addBefore("packet_handler", NAME_OUTBOUND_INTERCEPTOR, new LoggingEncoder(connection));
         }
-
-        PacketLogger.LOGGER.warn(
-                "Interceptor installed. Pipeline: {}",
-                String.join(" -> ", pipeline.names())
-        );
     }
 
     protected final void removeInterceptor(Connection connection)
@@ -213,11 +206,6 @@ public abstract class PacketLogHandler
         {
             pipeline.remove(NAME_OUTBOUND_INTERCEPTOR);
         }
-
-        PacketLogger.LOGGER.warn(
-                "Interceptor removed. Pipeline: {}",
-                String.join(" -> ", pipeline.names())
-        );
     }
 
     protected final void tick()
@@ -236,7 +224,6 @@ public abstract class PacketLogHandler
             return;
         }
         logEntries.add(PacketLogConverter.toLogEntry(logCtx, PacketLogEntry.Type.INBOUND, connection, packet));
-        PacketLogger.LOGGER.warn("Inbound packet captured");
     }
 
     private void logOutboundPacket(Connection connection, Packet<?> packet)
@@ -246,7 +233,6 @@ public abstract class PacketLogHandler
             return;
         }
         logEntries.add(PacketLogConverter.toLogEntry(logCtx, PacketLogEntry.Type.OUTBOUND, connection, packet));
-        PacketLogger.LOGGER.warn("Outbound packet captured");
     }
 
     private static Map<String, Class<?>> collectPacketTypes()

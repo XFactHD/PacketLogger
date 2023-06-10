@@ -129,7 +129,7 @@ public final class PacketLogWriter
         try
         {
             Path dirPath = FMLPaths.GAMEDIR.get().resolve("logs/packet_logger/");
-            FMLPaths.getOrCreateGameRelativePath(dirPath, "PacketLogger logs directory");
+            FMLPaths.getOrCreateGameRelativePath(dirPath);
 
             Path path = dirPath.resolve("packet_log_%d.md".formatted(endTime));
             Files.writeString(path, printer.print());

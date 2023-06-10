@@ -1,10 +1,11 @@
 plugins {
     id 'eclipse'
+    id 'idea'
     id 'maven-publish'
-    id 'net.minecraftforge.gradle' version '5.1.+'
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
 }
 
-version = '1.0'
+version = '2.0'
 group = 'xfacthd.packetlogger'
 archivesBaseName = 'packetlogger'
 
@@ -12,7 +13,7 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft {
-    mappings channel: 'official', version: '1.19.4'
+    mappings channel: 'official', version: '1.20'
 
     // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg') // Currently, this location cannot be changed from the default.
 
@@ -76,10 +77,10 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.19.4-45.0.9'
+    minecraft 'net.minecraftforge:forge:1.20-46.0.10'
 }
 
-jar {
+tasks.named('jar', Jar).configure {
     manifest {
         attributes([
                 "Specification-Title"     : "packetlogger",
@@ -87,13 +88,19 @@ jar {
                 "Specification-Version"   : "1", // We are version 1 of ourselves
                 "Implementation-Title"    : project.name,
                 "Implementation-Version"  : project.jar.archiveVersion,
-                "Implementation-Vendor"   : "XFactHD",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+                "Implementation-Vendor"   : "XFactHD"
         ])
     }
-}
 
-jar.finalizedBy('reobfJar')
+    // The settings below make sure that your build is reproducible
+    // More information at https://docs.gradle.org/current/userguide/working_with_files.html#sec:reproducible_archives
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+
+    // Example configuration to allow publishing using the maven-publish plugin
+    // This is the preferred method to reobfuscate your jar file
+    finalizedBy('reobfJar')
+}
 
 publishing {
     publications {
