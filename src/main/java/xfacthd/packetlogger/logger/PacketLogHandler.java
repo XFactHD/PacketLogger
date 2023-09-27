@@ -94,18 +94,36 @@ public abstract class PacketLogHandler
         }
         else
         {
-            instance = ClientPacketLogHandlerFactory.create(logCtx);
+            instance = ClientPacketLogHandlerFactory.create(logCtx, null, null);
         }
-        instance.installInterceptors();
-
-        instance.filtered = filters.size() > 0;
+        instance.filtered = !filters.isEmpty();
         instance.typeFilter.addAll(filters);
+        instance.installInterceptors();
 
         running = true;
         startTime = System.currentTimeMillis();
 
         src.sendSuccess(() -> Component.translatable(MSG_STARTED, logCtx.toMessageArgs()), true);
         return 1;
+    }
+
+    public static void startFromClientsideAutoAttach(PacketLogContext logCtx, Connection connection, ChannelPipeline pipeline)
+    {
+        Preconditions.checkState(FMLEnvironment.dist.isClient());
+
+        instance = ClientPacketLogHandlerFactory.create(logCtx, connection, pipeline);
+        instance.installInterceptors();
+
+        running = true;
+        startTime = System.currentTimeMillis();
+
+        Set<Class<?>> filters = new HashSet<>();
+        for (String filterString : logCtx.filters())
+        {
+            filters.add(PACKET_BY_SHORT_NAME.get(filterString));
+        }
+        instance.filtered = !filters.isEmpty();
+        instance.typeFilter.addAll(filters);
     }
 
     public static int stop(CommandSourceStack src)
@@ -147,15 +165,38 @@ public abstract class PacketLogHandler
         return PACKET_NAMES;
     }
 
+    public static Set<String> validatePacketFilters(String[] filters)
+    {
+        if (filters.length == 0)
+        {
+            return Set.of();
+        }
+
+        Set<String> brokenFilters = new HashSet<>();
+        for (String entry : filters)
+        {
+            if (!PACKET_BY_SHORT_NAME.containsKey(entry))
+            {
+                brokenFilters.add(entry);
+            }
+        }
+        return brokenFilters;
+    }
+
     protected static PacketLogHandler getInstance()
     {
         return instance;
     }
 
-    public static void installInterceptorOnJoin(Connection connection)
+    public static boolean isActive()
+    {
+        return running;
+    }
+
+    public static void installInterceptorOnJoin(Connection connection, ChannelPipeline pipeline)
     {
         if (!running) { return; }
-        instance.installInterceptor(connection);
+        instance.installInterceptor(connection, pipeline);
     }
 
     public static void removeInterceptorOnLeave(Connection connection)
@@ -185,6 +226,17 @@ public abstract class PacketLogHandler
     protected final void installInterceptor(Connection connection)
     {
         ChannelPipeline pipeline = connection.channel().pipeline();
+        installInterceptor(connection, pipeline);
+    }
+
+    protected final void installInterceptor(Connection connection, ChannelPipeline pipeline)
+    {
+        if (pipeline.get("packet_handler") == null)
+        {
+            // Bail out just in case to prevent unnecessary log spam
+            return;
+        }
+
         if (logCtx.inbound())
         {
             pipeline.addBefore("packet_handler", NAME_INBOUND_INTERCEPTOR, new LoggingDecoder(connection));
@@ -198,11 +250,16 @@ public abstract class PacketLogHandler
     protected final void removeInterceptor(Connection connection)
     {
         ChannelPipeline pipeline = connection.channel().pipeline();
-        if (logCtx.inbound())
+        removeInterceptor(pipeline);
+    }
+
+    protected final void removeInterceptor(ChannelPipeline pipeline)
+    {
+        if (logCtx.inbound() && pipeline.get(NAME_INBOUND_INTERCEPTOR) != null)
         {
             pipeline.remove(NAME_INBOUND_INTERCEPTOR);
         }
-        if (logCtx.outbound())
+        if (logCtx.outbound() && pipeline.get(NAME_OUTBOUND_INTERCEPTOR) != null)
         {
             pipeline.remove(NAME_OUTBOUND_INTERCEPTOR);
         }

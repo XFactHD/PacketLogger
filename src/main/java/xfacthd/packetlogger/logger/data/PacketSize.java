@@ -12,6 +12,11 @@ public abstract class PacketSize
         return new Single(size);
     }
 
+    public static PacketSize customQuery(int full, int contained)
+    {
+        return new CustomQuery(full, contained);
+    }
+
     public static PacketSize customPayload(int full, int contained)
     {
         return new CustomPayload(full, contained);
@@ -49,6 +54,29 @@ public abstract class PacketSize
         public int getSize()
         {
             return size;
+        }
+    }
+
+    public static class CustomQuery extends PacketSize
+    {
+        private final int full;
+        private final int contained;
+
+        public CustomQuery(int full, int contained)
+        {
+            this.full = full;
+            this.contained = contained;
+        }
+
+        @Override
+        public int getSize()
+        {
+            return full;
+        }
+
+        public int getContainedSize()
+        {
+            return contained;
         }
     }
 

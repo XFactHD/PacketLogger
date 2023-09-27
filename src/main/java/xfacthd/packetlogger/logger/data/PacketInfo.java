@@ -27,6 +27,11 @@ public abstract class PacketInfo
         return new Bundle(types, infos);
     }
 
+    public static PacketInfo customQuery(int transactionId, ResourceLocation id, PacketSize size, PacketDump dump)
+    {
+        return new CustomQuery(transactionId, id, size, dump);
+    }
+
     public static PacketInfo customPayload(ResourceLocation id, PacketSize size, PacketDump dump)
     {
         return new CustomPayload(id, size, dump);
@@ -139,6 +144,29 @@ public abstract class PacketInfo
         public PacketDump getDump()
         {
             return PacketDump.EMPTY;
+        }
+    }
+
+    public static final class CustomQuery extends Single
+    {
+        private final int transactionId;
+        private final ResourceLocation id;
+
+        private CustomQuery(int transactionId, ResourceLocation id, PacketSize size, PacketDump dump)
+        {
+            super(size, dump);
+            this.transactionId = transactionId;
+            this.id = id;
+        }
+
+        public int getTransactionId()
+        {
+            return transactionId;
+        }
+
+        public ResourceLocation getId()
+        {
+            return id;
         }
     }
 

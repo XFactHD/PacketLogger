@@ -40,7 +40,7 @@ public final class PacketLogAdapters
         packet("ClientboundCooldownPacket", null);
         packet("ClientboundCustomChatCompletionsPacket", null);
         packet("ClientboundCustomPayloadPacket", PacketLogConverter.registerAdapter(ClientboundCustomPayloadPacket.class, new CustomPayloadPacketLogAdapter.Clientbound()));
-        packet("ClientboundCustomQueryPacket", null);
+        packet("ClientboundCustomQueryPacket", PacketLogConverter.registerAdapter(ClientboundCustomQueryPacket.class, new CustomQueryPacketLogAdapter.Clientbound()));
         packet("ClientboundDamageEventPacket", null);
         packet("ClientboundDeleteChatPacket", PacketLogConverter.registerAdapter(ClientboundDeleteChatPacket.class, SensitiveDataPacketLogAdapter.INSTANCE));
         packet("ClientboundDisconnectPacket", null);
@@ -148,7 +148,7 @@ public final class PacketLogAdapters
         packet("ServerboundContainerClickPacket", null);
         packet("ServerboundContainerClosePacket", null);
         packet("ServerboundCustomPayloadPacket", PacketLogConverter.registerAdapter(ServerboundCustomPayloadPacket.class, new CustomPayloadPacketLogAdapter.Serverbound()));
-        packet("ServerboundCustomQueryPacket", null);
+        packet("ServerboundCustomQueryPacket", PacketLogConverter.registerAdapter(ServerboundCustomQueryPacket.class, new CustomQueryPacketLogAdapter.Serverbound()));
         packet("ServerboundEditBookPacket", null);
         packet("ServerboundEntityTagQuery", null);
         packet("ServerboundHelloPacket", null);
