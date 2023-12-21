@@ -2,9 +2,9 @@ package xfacthd.packetlogger.datagen;
 
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
-import net.minecraftforge.data.event.GatherDataEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
 import xfacthd.packetlogger.PacketLogger;
 import xfacthd.packetlogger.datagen.providers.PacketLogLanguageProvider;
 
@@ -19,4 +19,8 @@ public final class GatherDataHandler
 
         gen.addProvider(event.includeClient(), new PacketLogLanguageProvider(output));
     }
+
+
+
+    private GatherDataHandler() { }
 }

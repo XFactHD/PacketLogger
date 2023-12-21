@@ -1,23 +1,20 @@
 package xfacthd.packetlogger.mixin;
 
-import io.netty.channel.Channel;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import io.netty.channel.ChannelPipeline;
 import net.minecraft.network.Connection;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xfacthd.packetlogger.event.ClientEvents;
 
 @Mixin(targets = "net/minecraft/network/Connection$1")
 public class MixinConnectionAnonOne
 {
-    @Final
-    @Shadow
-    Connection val$pConnection;
-
-    @Inject(method = "initChannel", at = @At("TAIL"), remap = false)
-    private void packetlogger$capturePlayerConnectionInit(Channel channel, CallbackInfo ci)
+    @WrapOperation(method = "initChannel", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/Connection;configurePacketHandler(Lio/netty/channel/ChannelPipeline;)V"))
+    private static void packetlogger$capturePlayerConnectionInit(Connection connection, ChannelPipeline pipeline, Operation<Void> operation)
     {
-        ClientEvents.onClientStartConnecting(val$pConnection, channel.pipeline());
+        operation.call(connection, pipeline);
+        ClientEvents.onClientStartConnecting(connection, pipeline);
     }
 }

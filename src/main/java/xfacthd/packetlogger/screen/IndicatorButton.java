@@ -7,20 +7,19 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import xfacthd.packetlogger.PacketLogger;
+import xfacthd.packetlogger.utils.Utils;
 
 import java.util.function.BooleanSupplier;
 
 public final class IndicatorButton extends Button
 {
-    private static final ResourceLocation INDICATOR_TEXTURE = new ResourceLocation(PacketLogger.MODID, "textures/gui/indicator.png");
-    private static final int TEXTURE_WIDTH = 16;
-    private static final int TEXTURE_HEIGHT = 32;
+    private static final ResourceLocation INDICATOR_TEXTURE = Utils.rl("indicator");
+    private static final ResourceLocation INDICATOR_CHECKED_TEXTURE = Utils.rl("indicator_checked");
     private static final int INDICATOR_SIZE = 13;
 
     private final BooleanSupplier checkedSupplier;
     private final Boolean2ObjectFunction<Component> tooltipSupplier;
-    private boolean lastChecked = false;
+    private boolean lastChecked;
 
     public IndicatorButton(int x, int y, int w, int h, Component text, BooleanSupplier checkedSupplier, Boolean2ObjectFunction<Component> tooltipSupplier, OnPress onPress)
     {
@@ -45,8 +44,8 @@ public final class IndicatorButton extends Button
 
         int x = getX() + width - INDICATOR_SIZE - 3;
         int y = getY() + 3;
-        int texY = checked ? INDICATOR_SIZE : 0;
-        renderTexture(graphics, INDICATOR_TEXTURE, x, y, 0, texY, 0, INDICATOR_SIZE, INDICATOR_SIZE, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        ResourceLocation tex = checked ? INDICATOR_CHECKED_TEXTURE : INDICATOR_TEXTURE;
+        graphics.blitSprite(tex, x, y, 0, INDICATOR_SIZE, INDICATOR_SIZE);
     }
 
     @Override

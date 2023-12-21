@@ -2,7 +2,8 @@ package xfacthd.packetlogger.logger.adapters;
 
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.*;
+import net.minecraft.network.protocol.common.ClientboundUpdateTagsPacket;
+import net.minecraft.network.protocol.game.ClientboundUpdateRecipesPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagNetworkSerialization;
 import xfacthd.packetlogger.PacketLogger;
@@ -61,7 +62,7 @@ public abstract sealed class ClientboundUpdateDatapackDataPacketLogAdapter<T ext
     {
         private static final MethodHandle MTH_GET_TAGS_MAP = Utils.unreflectField(
                 TagNetworkSerialization.NetworkPayload.class,
-                "f_203963_"
+                "tags"
         );
 
         public Tags()

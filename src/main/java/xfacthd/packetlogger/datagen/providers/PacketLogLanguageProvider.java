@@ -4,7 +4,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.contents.TranslatableContents;
-import net.minecraftforge.common.data.LanguageProvider;
+import net.neoforged.neoforge.common.data.LanguageProvider;
 import xfacthd.packetlogger.PacketLogger;
 import xfacthd.packetlogger.cmd.PacketLogCommand;
 import xfacthd.packetlogger.logger.*;

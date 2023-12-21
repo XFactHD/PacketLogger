@@ -2,7 +2,7 @@ package xfacthd.packetlogger.utils;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+import net.minecraft.resources.ResourceLocation;
 import xfacthd.packetlogger.PacketLogger;
 import xfacthd.packetlogger.logger.data.PacketDump;
 
@@ -17,6 +17,11 @@ public final class Utils
     public static final Component VALUE_TRUE = translate("value", "true");
     public static final Component VALUE_FALSE = translate("value", "false");
     private static final String[] BYTE_UNITS = new String[] { "B", "KB", "MB", "GB" };
+
+    public static ResourceLocation rl(String path)
+    {
+        return new ResourceLocation(PacketLogger.MODID, path);
+    }
 
     public static String translateKey(String prefix, String postfix)
     {
@@ -75,16 +80,17 @@ public final class Utils
         }
     }
 
-    public static MethodHandle unreflectField(Class<?> clazz, String srgFieldName)
+    public static MethodHandle unreflectField(Class<?> clazz, String fieldName)
     {
-        Field field = ObfuscationReflectionHelper.findField(clazz, srgFieldName);
         try
         {
+            Field field = clazz.getDeclaredField(fieldName);
+            field.setAccessible(true);
             return MethodHandles.publicLookup().unreflectGetter(field);
         }
-        catch (IllegalAccessException e)
+        catch (IllegalAccessException | NoSuchFieldException e)
         {
-            throw new RuntimeException("Failed to unreflect field '%s#%s'".formatted(clazz.getName(), srgFieldName), e);
+            throw new RuntimeException("Failed to unreflect field '%s#%s'".formatted(clazz.getName(), fieldName), e);
         }
     }
 

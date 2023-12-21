@@ -1,30 +1,32 @@
 modLoader="javafml"
-loaderVersion="[46,)"
+loaderVersion="${loader_version_range}"
 license="LGPLv3"
 issueTrackerURL="https://github.com/xfacthd/packetlogger"
 
 [[mods]]
 	modId="packetlogger"
-	version="${file.jarVersion}"
+	version="${mod_version}"
 	displayName="PacketLogger"
-	#updateJSONURL="https://change.me.example.invalid/updates.json"
-	displayURL="https://www.curseforge.com/minecraft/mc-mods/packetlogger"
+	#displayURL="https://www.curseforge.com/minecraft/mc-mods/packetlogger"
 	logoFile="logo.png"
 	authors="XFactHD"
 	displayTest="IGNORE_ALL_VERSION"
 	description='''
 	'''
 
+[[mixins]]
+    config="packetlogger.mixin.json"
+
 [[dependencies.packetlogger]]
-    modId="forge"
-    mandatory=true
-    versionRange="[46,)"
+    modId="neoforge"
+    type="required"
+    versionRange="${neoforge_version_range}"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.packetlogger]]
     modId="minecraft"
-    mandatory=true
-    versionRange="[1.20,1.21)"
+    type="required"
+    versionRange="${minecraft_version_range}"
     ordering="NONE"
     side="BOTH"

@@ -5,34 +5,32 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
 import net.minecraft.client.gui.screens.worldselection.SelectWorldScreen;
 import net.minecraft.network.Connection;
-import net.minecraftforge.client.event.*;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.client.event.*;
+import net.neoforged.neoforge.common.NeoForge;
 import xfacthd.packetlogger.logger.PacketLogContext;
 import xfacthd.packetlogger.logger.PacketLogHandler;
 import xfacthd.packetlogger.screen.ConfigureAutoAttachScreen;
 import xfacthd.packetlogger.screen.LoggerIndicatorOverlay;
+import xfacthd.packetlogger.utils.Utils;
 
 public final class ClientEvents
 {
     private static boolean autoAttachArmed = false;
     private static PacketLogContext autoAttachContext = null;
 
-    public static void init()
+    public static void init(IEventBus modBus)
     {
-        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
         modBus.addListener(ClientEvents::onRegisterGuiOverlays);
 
-        IEventBus bus = MinecraftForge.EVENT_BUS;
-        bus.addListener(ClientEvents::onWorldSelectOrMultiplayerScreenInit);
-        bus.addListener(ClientEvents::onWorldSelectOrMultiplayerScreenOpen);
-        bus.addListener(ClientEvents::onClientDisconnect);
+        NeoForge.EVENT_BUS.addListener(ClientEvents::onWorldSelectOrMultiplayerScreenInit);
+        NeoForge.EVENT_BUS.addListener(ClientEvents::onWorldSelectOrMultiplayerScreenOpen);
+        NeoForge.EVENT_BUS.addListener(ClientEvents::onClientDisconnect);
     }
 
     private static void onRegisterGuiOverlays(final RegisterGuiOverlaysEvent event)
     {
-        event.registerAboveAll("logger_state", new LoggerIndicatorOverlay());
+        event.registerAboveAll(Utils.rl("logger_state"), new LoggerIndicatorOverlay());
     }
 
     private static void onWorldSelectOrMultiplayerScreenOpen(final ScreenEvent.Opening event)

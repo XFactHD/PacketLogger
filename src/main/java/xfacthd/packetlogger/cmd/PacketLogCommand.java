@@ -8,10 +8,10 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.commands.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraftforge.client.event.RegisterClientCommandsEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import xfacthd.packetlogger.logger.PacketLogContext;
 import xfacthd.packetlogger.logger.PacketLogHandler;
 import xfacthd.packetlogger.utils.Utils;
@@ -60,13 +60,13 @@ public final class PacketLogCommand
     {
         if (FMLEnvironment.dist.isDedicatedServer())
         {
-            MinecraftForge.EVENT_BUS.addListener((RegisterCommandsEvent event) ->
+            NeoForge.EVENT_BUS.addListener((RegisterCommandsEvent event) ->
                     registerCommand(event.getDispatcher(), SERVER_PREFIX, true)
             );
         }
         else
         {
-            MinecraftForge.EVENT_BUS.addListener((RegisterClientCommandsEvent event) ->
+            NeoForge.EVENT_BUS.addListener((RegisterClientCommandsEvent event) ->
                     registerCommand(event.getDispatcher(), CLIENT_PREFIX, false)
             );
         }

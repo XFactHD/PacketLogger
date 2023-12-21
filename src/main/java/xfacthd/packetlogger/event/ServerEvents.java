@@ -1,17 +1,15 @@
 package xfacthd.packetlogger.event;
 
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import xfacthd.packetlogger.logger.PacketLogHandler;
 
 public final class ServerEvents
 {
-    public static void init()
+    public static void init(IEventBus modBus)
     {
-        IEventBus bus = MinecraftForge.EVENT_BUS;
-        bus.addListener(ServerEvents::onPlayerDisconnect);
+        modBus.addListener(ServerEvents::onPlayerDisconnect);
     }
 
     private static void onPlayerDisconnect(final PlayerEvent.PlayerLoggedOutEvent event)

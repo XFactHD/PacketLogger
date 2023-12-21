@@ -2,8 +2,6 @@ package xfacthd.packetlogger.logger.data;
 
 import net.minecraft.network.FriendlyByteBuf;
 
-import java.util.List;
-
 public final class PacketDump
 {
     public static final PacketDump EMPTY = new PacketDump();

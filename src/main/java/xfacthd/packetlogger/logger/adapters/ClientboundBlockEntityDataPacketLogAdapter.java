@@ -1,7 +1,7 @@
 package xfacthd.packetlogger.logger.adapters;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraftforge.registries.ForgeRegistries;
 import xfacthd.packetlogger.logger.*;
 import xfacthd.packetlogger.logger.data.PacketInfo;
 import xfacthd.packetlogger.logger.data.PacketLogEntry;
@@ -22,7 +22,7 @@ public final class ClientboundBlockEntityDataPacketLogAdapter implements PacketL
         if (entry.info() instanceof PacketInfo.BlockEntity beInfo)
         {
             //noinspection ConstantConditions
-            String typeName = ForgeRegistries.BLOCK_ENTITY_TYPES.getKey(beInfo.getType()).toString();
+            String typeName = BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(beInfo.getType()).toString();
             printer.append("Position: ").append(beInfo.getPos().toString()).newLine(true)
                     .append("Type: ").append(typeName).newLine(true);
         }

@@ -131,10 +131,12 @@ public final class ConfigureAutoAttachScreen extends Screen
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
+    public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
+        renderTransparentBackground(graphics);
+
         graphics.fillGradient(0, 0, width, height, 0xC0101010, 0xD0101010);
-        graphics.blitNineSliced(BACKGROUND, xLeft, yTop, imageWidth, imageHeight, 4, 4, 248, 166, 0, 0);
+        graphics.blitWithBorder(BACKGROUND, xLeft, yTop, 0, 0, imageWidth, imageHeight, 248, 166, 4);
 
         int x = xLeft + PADDING;
         int y = yTop + PADDING;
@@ -146,8 +148,12 @@ public final class ConfigureAutoAttachScreen extends Screen
             y += LINE_HEIGHT;
         }
         graphics.drawString(font, LINE_FILTERS, x, y, 0x404040, false);
+    }
 
-        super.render(graphics, mouseX, mouseY, partialTicks);
+    @Override
+    public void render(GuiGraphics p_281549_, int p_281550_, int p_282878_, float p_282465_)
+    {
+        super.render(p_281549_, p_281550_, p_282878_, p_282465_);
     }
 
     @Override

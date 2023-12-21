@@ -3,7 +3,7 @@ package xfacthd.packetlogger.logger;
 import net.minecraft.Util;
 import net.minecraft.network.CompressionDecoder;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.fml.loading.FMLPaths;
+import net.neoforged.fml.loading.FMLPaths;
 import xfacthd.packetlogger.PacketLogger;
 import xfacthd.packetlogger.logger.data.*;
 import xfacthd.packetlogger.utils.PacketPrinter;

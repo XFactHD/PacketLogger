@@ -3,8 +3,8 @@ package xfacthd.packetlogger.logger.adapters;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket;
-import net.minecraft.network.protocol.game.ServerboundCustomPayloadPacket;
+import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
+import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
 import net.minecraft.resources.ResourceLocation;
 import xfacthd.packetlogger.logger.PacketLogAdapter;
 import xfacthd.packetlogger.logger.PacketLogContext;
@@ -15,7 +15,7 @@ import xfacthd.packetlogger.utils.Utils;
 public abstract sealed class CustomPayloadPacketLogAdapter<T extends Packet<?>> implements PacketLogAdapter<T>
         permits CustomPayloadPacketLogAdapter.Clientbound, CustomPayloadPacketLogAdapter.Serverbound
 {
-    protected final PacketInfo analyze(T pkt, ResourceLocation id, FriendlyByteBuf data, PacketLogContext logCtx)
+    protected final PacketInfo analyze(T pkt, ResourceLocation id, PacketLogContext logCtx)
     {
         boolean logSize = logCtx.logSize();
         boolean hexDump = logCtx.hexDump();
@@ -26,14 +26,11 @@ public abstract sealed class CustomPayloadPacketLogAdapter<T extends Packet<?>> 
         {
             FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
 
-            int contStart = buf.writerIndex();
-            buf.writeBytes(data.slice());
-            int contCount = buf.writerIndex() - contStart;
-
-            buf.resetWriterIndex();
             int fullStart = buf.writerIndex();
             pkt.write(buf);
             int fullCount = buf.writerIndex() - fullStart;
+            buf.readResourceLocation();
+            int contCount = fullCount - buf.readerIndex();
 
             if (logSize)
             {
@@ -78,7 +75,7 @@ public abstract sealed class CustomPayloadPacketLogAdapter<T extends Packet<?>> 
         @Override
         public PacketInfo analyze(ClientboundCustomPayloadPacket pkt, PacketLogContext logCtx)
         {
-            return analyze(pkt, pkt.getIdentifier(), pkt.getData(), logCtx);
+            return analyze(pkt, pkt.payload().id(), logCtx);
         }
     }
 
@@ -87,7 +84,7 @@ public abstract sealed class CustomPayloadPacketLogAdapter<T extends Packet<?>> 
         @Override
         public PacketInfo analyze(ServerboundCustomPayloadPacket pkt, PacketLogContext logCtx)
         {
-            return analyze(pkt, pkt.getIdentifier(), pkt.getData(), logCtx);
+            return analyze(pkt, pkt.payload().id(), logCtx);
         }
     }
 }

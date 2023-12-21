@@ -4,7 +4,7 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.login.ClientboundCustomQueryPacket;
-import net.minecraft.network.protocol.login.ServerboundCustomQueryPacket;
+import net.minecraft.network.protocol.login.ServerboundCustomQueryAnswerPacket;
 import net.minecraft.resources.ResourceLocation;
 import xfacthd.packetlogger.logger.PacketLogAdapter;
 import xfacthd.packetlogger.logger.PacketLogContext;
@@ -14,7 +14,7 @@ import xfacthd.packetlogger.utils.Utils;
 
 public abstract sealed class CustomQueryPacketLogAdapter<T extends Packet<?>> implements PacketLogAdapter<T>
 {
-    protected final PacketInfo analyze(T pkt, int transactionId, ResourceLocation id, FriendlyByteBuf data, PacketLogContext logCtx)
+    protected final PacketInfo analyze(T pkt, int transactionId, ResourceLocation id, PacketLogContext logCtx)
     {
         boolean logSize = logCtx.logSize();
         boolean hexDump = logCtx.hexDump();
@@ -25,14 +25,15 @@ public abstract sealed class CustomQueryPacketLogAdapter<T extends Packet<?>> im
         {
             FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
 
-            int contStart = buf.writerIndex();
-            buf.writeBytes(data.slice());
-            int contCount = buf.writerIndex() - contStart;
-
-            buf.resetWriterIndex();
             int fullStart = buf.writerIndex();
             pkt.write(buf);
             int fullCount = buf.writerIndex() - fullStart;
+            buf.readVarInt();
+            if (id != null)
+            {
+                buf.readResourceLocation();
+            }
+            int contCount = fullCount - buf.readerIndex();
 
             if (logSize)
             {
@@ -82,16 +83,16 @@ public abstract sealed class CustomQueryPacketLogAdapter<T extends Packet<?>> im
         @Override
         public PacketInfo analyze(ClientboundCustomQueryPacket pkt, PacketLogContext logCtx)
         {
-            return analyze(pkt, pkt.getTransactionId(), pkt.getIdentifier(), pkt.getData(), logCtx);
+            return analyze(pkt, pkt.transactionId(), pkt.payload().id(), logCtx);
         }
     }
 
-    public static final class Serverbound extends CustomQueryPacketLogAdapter<ServerboundCustomQueryPacket>
+    public static final class Serverbound extends CustomQueryPacketLogAdapter<ServerboundCustomQueryAnswerPacket>
     {
         @Override
-        public PacketInfo analyze(ServerboundCustomQueryPacket pkt, PacketLogContext logCtx)
+        public PacketInfo analyze(ServerboundCustomQueryAnswerPacket pkt, PacketLogContext logCtx)
         {
-            return analyze(pkt, pkt.getTransactionId(), null, pkt.getData(), logCtx);
+            return analyze(pkt, pkt.transactionId(), null, logCtx);
         }
     }
 }

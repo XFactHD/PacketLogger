@@ -8,8 +8,8 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.ConnectionProtocol;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
-import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+import net.minecraft.network.protocol.PacketFlow;
+import net.neoforged.fml.loading.FMLEnvironment;
 import xfacthd.packetlogger.PacketLogger;
 import xfacthd.packetlogger.logger.data.PacketLogEntry;
 import xfacthd.packetlogger.logger.sided.ClientPacketLogHandlerFactory;
@@ -20,6 +20,7 @@ import xfacthd.packetlogger.utils.Utils;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 
 public abstract class PacketLogHandler
 {
@@ -294,17 +295,22 @@ public abstract class PacketLogHandler
 
     private static Map<String, Class<?>> collectPacketTypes()
     {
-        Map<Class<? extends Packet<?>>, ConnectionProtocol> protocolByPacket = ObfuscationReflectionHelper.getPrivateValue(
-                ConnectionProtocol.class, null, "f_129572_"
-        );
-        Preconditions.checkNotNull(protocolByPacket, "ConnectionProtocol#PROTOCOL_BY_PACKET == null");
-
         Map<String, Class<?>> packetByShortName = new HashMap<>();
-        protocolByPacket.keySet().forEach(pktClazz ->
+        for (ConnectionProtocol protocol : ConnectionProtocol.values())
         {
-            String name = Utils.printClassName(pktClazz);
-            packetByShortName.put(name, pktClazz);
-        });
+            for (PacketFlow flow : PacketFlow.values())
+            {
+                Consumer<Class<?>> pktClazzConsumer = pktClazz ->
+                {
+                    String name = Utils.printClassName(pktClazz);
+                    packetByShortName.put(name, pktClazz);
+                };
+
+                ConnectionProtocol.PacketSet<?> packetSet = protocol.codec(flow).packetSet;
+                packetSet.classToId.keySet().forEach(pktClazzConsumer);
+                packetSet.extraClasses.forEach(pktClazzConsumer);
+            }
+        }
         return packetByShortName;
     }
 }
